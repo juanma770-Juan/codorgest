@@ -22,6 +22,9 @@ export default function NavMenu() {
       <Link href="/alimentacion" className={`nav-link ${pathname === '/alimentacion' ? 'active' : ''}`}>
         Alimentación
       </Link>
+      <Link href="/configuracion" className={`nav-link ${pathname === '/configuracion' ? 'active' : ''}`}>
+        ⚙️
+      </Link>
     </nav>
   );
 }

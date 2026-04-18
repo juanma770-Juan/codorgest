@@ -7,12 +7,10 @@ export default function Home() {
   const [totalBirds, setTotalBirds] = useState(0);
   const [activeBatches, setActiveBatches] = useState(0);
   const [alertBatches, setAlertBatches] = useState<(IncubationBatch & { days: number })[]>([]);
-  const [userEmail, setUserEmail] = useState("");
 
   useEffect(() => {
     // Load email config
     const savedEmail = localStorage.getItem('quail_user_email');
-    if (savedEmail) setUserEmail(savedEmail);
 
     // Load Stats
     getCages().then(cages => {
@@ -29,8 +27,6 @@ export default function Home() {
       const currentAlerts: (IncubationBatch & { days: number })[] = [];
       
       for (const batch of active) {
-        // En Safari/iOS los strings 'YYYY-MM-DD HH:MM' fallan, pero new Date(string) en Chrome sí los lee.
-        // Convertir espacio a T por si acaso
         const safeDateStr = batch.startDate.replace(' ', 'T');
         const start = new Date(safeDateStr);
         const diffTime = Math.abs(now.getTime() - start.getTime());
@@ -39,7 +35,6 @@ export default function Home() {
         if (diffDays >= 8 && diffDays <= 12) {
           currentAlerts.push({ ...batch, days: diffDays });
 
-          // Si llegamos al día 8 y no hemos madado el correo, hacerlo
           if (!batch.ovoscopiaAlertSent && savedEmail) {
             try {
               const resp = await fetch('/api/notify', {
@@ -54,7 +49,6 @@ export default function Home() {
               });
               if (resp.ok) {
                  await updateIncubationBatch(batch.id, { ovoscopiaAlertSent: true });
-                 console.log("Correo enviado para:", batch.incubatorName);
               }
             } catch (err) {
               console.error("No se pudo enviar correo a Resend:", err);
@@ -66,29 +60,11 @@ export default function Home() {
     });
   }, []);
 
-  const saveEmailConfig = (e: React.FormEvent) => {
-    e.preventDefault();
-    localStorage.setItem('quail_user_email', userEmail);
-    alert("Correo configurado. Las futuras alertas se enviarán allí al cargar el panel.");
-  };
-
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-      <header style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <div>
-          <h2 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>Panel de Control Principal</h2>
-          <p style={{ color: 'var(--text-muted)' }}>Bienvenido al sistema de manejo de CodorGest</p>
-        </div>
-        <form onSubmit={saveEmailConfig} style={{ display: 'flex', gap: '0.5rem', background: 'rgba(0,0,0,0.2)', padding: '0.5rem', borderRadius: '0.5rem', border: '1px solid var(--card-border)' }}>
-          <input 
-            type="email" 
-            placeholder="Correo para Alertas" 
-            value={userEmail} 
-            onChange={e => setUserEmail(e.target.value)} 
-            style={{ padding: '0.5rem', borderRadius: '0.25rem', border: 'none', background: 'rgba(0,0,0,0.5)', color: 'white' }}
-          />
-          <button type="submit" className="btn-primary" style={{ padding: '0.5rem 1rem', fontSize: '0.9rem' }}>Guardar</button>
-        </form>
+      <header>
+        <h2 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>Panel de Control Principal</h2>
+        <p style={{ color: 'var(--text-muted)' }}>Bienvenido al sistema de manejo de CodorGest</p>
       </header>
 
       {alertBatches.length > 0 && (
