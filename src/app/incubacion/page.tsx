@@ -77,19 +77,24 @@ export default function IncubacionPage() {
       });
     }
 
-    await addIncubationBatch({
-      incubatorName: incubator,
-      capacity,
-      startDate: startDateTime.replace('T', ' '),
-      expectedHatchDate: expectedISO.replace('T', ' '),
-      eggsLoaded: Number(eggsLoaded),
-      notes: initNotes,
-      temperatureLogs: logs
-    });
+    try {
+      await addIncubationBatch({
+        incubatorName: incubator,
+        capacity,
+        startDate: startDateTime.replace('T', ' '),
+        expectedHatchDate: expectedISO.replace('T', ' '),
+        eggsLoaded: Number(eggsLoaded),
+        notes: initNotes,
+        temperatureLogs: logs
+      });
 
-    setShowForm(false);
-    clearForm();
-    loadBatches();
+      setShowForm(false);
+      clearForm();
+      loadBatches();
+    } catch (err) {
+      console.error('Error al guardar lote:', err);
+      alert('Error al guardar el lote. Revisa la consola para más detalles.');
+    }
   };
 
   const handleUpdateNotes = async (e: React.FormEvent) => {
