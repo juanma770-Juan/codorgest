@@ -175,8 +175,13 @@ export default function IncubacionPage() {
 
   const handleDelete = async (id: string) => {
     if (window.confirm("¿Estás seguro de que deseas eliminar este lote por completo? Esta acción no se puede deshacer.")) {
-      await deleteIncubationBatch(id);
-      loadBatches();
+      try {
+        await deleteIncubationBatch(id);
+        loadBatches();
+      } catch (err) {
+        console.error('Error al eliminar lote:', err);
+        alert('Error al eliminar el lote. Revisa la consola para más detalles.');
+      }
     }
   };
 
@@ -393,13 +398,13 @@ export default function IncubacionPage() {
 
             return (
               <div key={batch.id} className="glass-card" style={{ position: 'relative', overflow: 'hidden' }}>
-                <div style={{ position: 'absolute', top: 0, right: 0, padding: '0.25rem 1rem', fontSize: '0.8rem', fontWeight: 'bold', background: isActive ? 'rgba(245, 158, 11, 0.2)' : 'rgba(16, 185, 129, 0.2)', color: isActive ? 'var(--primary-accent)' : 'var(--success)', borderBottomLeftRadius: '0.5rem' }}>
+                <div style={{ position: 'absolute', top: 0, right: 0, padding: '0.25rem 1rem', fontSize: '0.8rem', fontWeight: 'bold', background: isActive ? 'rgba(245, 158, 11, 0.2)' : 'rgba(16, 185, 129, 0.2)', color: isActive ? 'var(--primary-accent)' : 'var(--success)', borderBottomLeftRadius: '0.5rem', zIndex: 1 }}>
                   {isActive ? 'En Proceso' : 'Completado'}
                 </div>
                 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                   <h3 style={{ margin: 0 }}>{batch.incubatorName}</h3>
-                  <button onClick={() => handleDelete(batch.id)} style={{ background: 'none', border: 'none', color: 'var(--danger)', cursor: 'pointer', fontSize: '1.2rem'}} title="Eliminar Lote">
+                  <button onClick={() => handleDelete(batch.id)} style={{ background: 'none', border: 'none', color: 'var(--danger)', cursor: 'pointer', fontSize: '1.2rem', position: 'relative', zIndex: 2, padding: '0.5rem'}} title="Eliminar Lote">
                     🗑️
                   </button>
                 </div>

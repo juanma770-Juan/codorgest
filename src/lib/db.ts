@@ -99,6 +99,7 @@ export async function updateIncubationBatch(id: string, updates: Partial<Incubat
 
   if (error) {
     console.error('Error actualizando lote:', error);
+    throw error;
   }
 }
 
@@ -118,6 +119,7 @@ export async function deleteIncubationBatch(id: string): Promise<void> {
 
   if (error) {
     console.error('Error eliminando lote:', error);
+    throw error;
   }
 }
 
