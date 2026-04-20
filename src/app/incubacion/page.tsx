@@ -398,15 +398,12 @@ export default function IncubacionPage() {
 
             return (
               <div key={batch.id} className="glass-card" style={{ position: 'relative', overflow: 'hidden' }}>
-                <div style={{ position: 'absolute', top: 0, right: 0, padding: '0.25rem 1rem', fontSize: '0.8rem', fontWeight: 'bold', background: isActive ? 'rgba(245, 158, 11, 0.2)' : 'rgba(16, 185, 129, 0.2)', color: isActive ? 'var(--primary-accent)' : 'var(--success)', borderBottomLeftRadius: '0.5rem', zIndex: 1 }}>
+                <div style={{ position: 'absolute', top: 0, right: 0, padding: '0.25rem 1rem', fontSize: '0.8rem', fontWeight: 'bold', background: isActive ? 'rgba(245, 158, 11, 0.2)' : 'rgba(16, 185, 129, 0.2)', color: isActive ? 'var(--primary-accent)' : 'var(--success)', borderBottomLeftRadius: '0.5rem' }}>
                   {isActive ? 'En Proceso' : 'Completado'}
                 </div>
                 
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <div style={{ marginBottom: '1rem' }}>
                   <h3 style={{ margin: 0 }}>{batch.incubatorName}</h3>
-                  <button onClick={() => handleDelete(batch.id)} style={{ background: 'none', border: 'none', color: 'var(--danger)', cursor: 'pointer', fontSize: '1.2rem', position: 'relative', zIndex: 2, padding: '0.5rem'}} title="Eliminar Lote">
-                    🗑️
-                  </button>
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
                   <p><strong>Inicio:</strong> {batch.startDate}</p>
@@ -432,31 +429,40 @@ export default function IncubacionPage() {
                   </div>
                 </div>
 
-                {isActive && (
-                  <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1.5rem', flexWrap: 'wrap' }}>
-                    <button 
-                      onClick={() => openNotesEditor(batch)} 
-                      className="btn-primary" 
-                      style={{ flex: 1, padding: '0.5rem', background: 'rgba(59, 130, 246, 0.2)', color: '#60a5fa', border: '1px solid rgba(59, 130, 246, 0.3)', fontSize: '0.85rem' }}
-                    >
-                      Anotar (Bitácora)
-                    </button>
-                    <button 
-                      onClick={() => { setManageId(batch.id); setManageType('discard'); }} 
-                      className="btn-primary" 
-                      style={{ flex: 1, padding: '0.5rem', background: 'rgba(255,255,255,0.05)', color: 'white', border: '1px solid rgba(255,255,255,0.1)', fontSize: '0.85rem' }}
-                    >
-                      Restar Huevos
-                    </button>
-                    <button 
-                      onClick={() => { setManageId(batch.id); setManageType('complete'); }} 
-                      className="btn-primary" 
-                      style={{ flex: 1.5, padding: '0.5rem', background: 'rgba(16, 185, 129, 0.2)', color: 'var(--success)', border: '1px solid rgba(16, 185, 129, 0.3)', fontSize: '0.85rem' }}
-                    >
-                      Marcar Eclosión
-                    </button>
-                  </div>
-                )}
+                <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1.5rem', flexWrap: 'wrap' }}>
+                  {isActive && (
+                    <>
+                      <button 
+                        onClick={() => openNotesEditor(batch)} 
+                        className="btn-primary" 
+                        style={{ flex: 1, padding: '0.5rem', background: 'rgba(59, 130, 246, 0.2)', color: '#60a5fa', border: '1px solid rgba(59, 130, 246, 0.3)', fontSize: '0.85rem' }}
+                      >
+                        Anotar (Bitácora)
+                      </button>
+                      <button 
+                        onClick={() => { setManageId(batch.id); setManageType('discard'); }} 
+                        className="btn-primary" 
+                        style={{ flex: 1, padding: '0.5rem', background: 'rgba(255,255,255,0.05)', color: 'white', border: '1px solid rgba(255,255,255,0.1)', fontSize: '0.85rem' }}
+                      >
+                        Restar Huevos
+                      </button>
+                      <button 
+                        onClick={() => { setManageId(batch.id); setManageType('complete'); }} 
+                        className="btn-primary" 
+                        style={{ flex: 1.5, padding: '0.5rem', background: 'rgba(16, 185, 129, 0.2)', color: 'var(--success)', border: '1px solid rgba(16, 185, 129, 0.3)', fontSize: '0.85rem' }}
+                      >
+                        Marcar Eclosión
+                      </button>
+                    </>
+                  )}
+                  <button 
+                    onClick={() => handleDelete(batch.id)} 
+                    className="btn-primary" 
+                    style={{ flex: isActive ? 0 : 1, minWidth: isActive ? 'auto' : '100%', padding: '0.5rem 1rem', background: 'rgba(239, 68, 68, 0.15)', color: 'var(--danger)', border: '1px solid rgba(239, 68, 68, 0.3)', fontSize: '0.85rem', cursor: 'pointer' }}
+                  >
+                    🗑️ Eliminar Lote
+                  </button>
+                </div>
               </div>
             );
           })}
