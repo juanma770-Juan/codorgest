@@ -24,6 +24,7 @@ export default function IncubacionPage() {
   const [infertile, setInfertile] = useState("");
   const [discardAmount, setDiscardAmount] = useState("");
   const [selectedLogIdx, setSelectedLogIdx] = useState<number | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   const loadBatches = async () => {
     setLoading(true);
@@ -174,14 +175,17 @@ export default function IncubacionPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm("¿Estás seguro de que deseas eliminar este lote por completo? Esta acción no se puede deshacer.")) {
+    if (confirmDeleteId === id) {
       try {
         await deleteIncubationBatch(id);
+        setConfirmDeleteId(null);
         loadBatches();
       } catch (err) {
         console.error('Error al eliminar lote:', err);
         alert('Error al eliminar el lote. Revisa la consola para más detalles.');
       }
+    } else {
+      setConfirmDeleteId(id);
     }
   };
 
@@ -455,13 +459,32 @@ export default function IncubacionPage() {
                       </button>
                     </>
                   )}
-                  <button 
-                    onClick={() => handleDelete(batch.id)} 
-                    className="btn-primary" 
-                    style={{ flex: isActive ? 0 : 1, minWidth: isActive ? 'auto' : '100%', padding: '0.5rem 1rem', background: 'rgba(239, 68, 68, 0.15)', color: 'var(--danger)', border: '1px solid rgba(239, 68, 68, 0.3)', fontSize: '0.85rem', cursor: 'pointer' }}
-                  >
-                    🗑️ Eliminar Lote
-                  </button>
+                  {confirmDeleteId === batch.id ? (
+                    <div style={{ display: 'flex', gap: '0.5rem', flex: isActive ? 0 : 1, minWidth: isActive ? 'auto' : '100%' }}>
+                      <button 
+                        onClick={() => handleDelete(batch.id)} 
+                        className="btn-primary" 
+                        style={{ flex: 1, padding: '0.5rem 1rem', background: 'rgba(239, 68, 68, 0.4)', color: '#ff6b6b', border: '1px solid rgba(239, 68, 68, 0.6)', fontSize: '0.85rem', cursor: 'pointer', fontWeight: 'bold' }}
+                      >
+                        ✓ Sí, Eliminar
+                      </button>
+                      <button 
+                        onClick={() => setConfirmDeleteId(null)} 
+                        className="btn-primary" 
+                        style={{ flex: 1, padding: '0.5rem 1rem', background: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.2)', fontSize: '0.85rem', cursor: 'pointer' }}
+                      >
+                        ✕ Cancelar
+                      </button>
+                    </div>
+                  ) : (
+                    <button 
+                      onClick={() => handleDelete(batch.id)} 
+                      className="btn-primary" 
+                      style={{ flex: isActive ? 0 : 1, minWidth: isActive ? 'auto' : '100%', padding: '0.5rem 1rem', background: 'rgba(239, 68, 68, 0.15)', color: 'var(--danger)', border: '1px solid rgba(239, 68, 68, 0.3)', fontSize: '0.85rem', cursor: 'pointer' }}
+                    >
+                      🗑️ Eliminar Lote
+                    </button>
+                  )}
                 </div>
               </div>
             );
